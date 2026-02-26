@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 
 # ---------------- CONFIG ----------------
-TOKEN = "8534997492:AAHlG2hdvkZO1d09uMbwgly3AwrZgWuxIf8"
+TOKEN = "8644479151:AAHVTAjwNUph35ejbikTkCMGj3mTnXU_K7Y"
 
 # ---- Kalit so'zlar ----
 KEYWORDS = [
