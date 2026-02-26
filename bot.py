@@ -44,7 +44,8 @@ KEYWORDS = [
     "@Reklama_chimann", "Kimga kerak bo'lsa lichkaga", "+998887071696", "🚰 КОЛОДЕЦ ХИЗМАТЛАРИ – Сифат ва ишонч кафолати!", "Assalomu alaykum komnata bor bosa menga yozvorilar", "Andijon Quyonchi Clubi", "Москва внимание падработка работа",
     "+998977668030", "+998903569898", "тел: +7 933 680 1615", "+998931553766", "📦🚛 СРОЧНО  ЮК ТАКЛИФИ №1", "🇺🇿 Ташкент ➡️ 🇷🇺 Воскресенск", "@Djurayev0029", "Сотилади", 
     "@SherovaXurshida", "NL_ SOG'LOM HAYOT", "+998998230103", "+998998230103", "🇺🇿Oʻzbekiston boʻylab dastafka ustanofka bepul", "✔️SIZ HAM BIZGA ISHONIB BUYURTMA BERING. BIZ SIZNI ISHONCHINGIZNI OQLAYMIZ", "@Darvozachi_Tolibboy",
-    "+998908695529", "@a_mir_shax001", "Sogligi ola hamma joyi soglom yeb ichishi ham yaxshi", "Toshkent Gaz Yandex🥇", "Toshkent Gaz Yandex", "https://t.me/Toshkent_Gaz_Metan_Zaprafkalar"
+    "+998908695529", "@a_mir_shax001", "Sogligi ola hamma joyi soglom yeb ichishi ham yaxshi", "Toshkent Gaz Yandex🥇", "Toshkent Gaz Yandex", "https://t.me/Toshkent_Gaz_Metan_Zaprafkalar","Namangan", "odam pochta olamiz", "93-179-89-89",
+    "+998931798989", ""
 ]
 
 # ---- Hammasini lowercase ----
