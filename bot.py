@@ -46,7 +46,9 @@ KEYWORDS = [
     "@SherovaXurshida", "NL_ SOG'LOM HAYOT", "+998998230103", "+998998230103", "🇺🇿Oʻzbekiston boʻylab dastafka ustanofka bepul", "✔️SIZ HAM BIZGA ISHONIB BUYURTMA BERING. BIZ SIZNI ISHONCHINGIZNI OQLAYMIZ", "@Darvozachi_Tolibboy",
     "+998908695529", "@a_mir_shax001", "Sogligi ola hamma joyi soglom yeb ichishi ham yaxshi", "Toshkent Gaz Yandex🥇", "Toshkent Gaz Yandex", "https://t.me/Toshkent_Gaz_Metan_Zaprafkalar","Namangan", "odam pochta olamiz", "93-179-89-89",
     "+998931798989", "⚠️FAQAT AYOLLAR KIRSIN⚠️", "https://t.me/+unt6j7xH5MM2Y2Iy", "💕 MAXFIY INTIM KOSMETIKALAR✅", "O'QISANGIZ OG'ZINGIZ LANG OCHILIB QOLADI😱😱😍😍", "Dastafka xizmati bor", "K_5 Qozogʻiston mahsuloti 🇵🇼", "+998901273929",
-    " Qozo Salarkasi bor.", "Abdurasul", "KECH QOLMANG! VAQT KETYAPTI", "💰 1 ta ovoz = 32 900 so‘m", "@MajburiyRoBot", "Agar oldin boshqa botda ovoz bergan bo‘lsangiz ham"
+    " Qozo Salarkasi bor.", "Abdurasul", "KECH QOLMANG! VAQT KETYAPTI", "💰 1 ta ovoz = 32 900 so‘m", "@MajburiyRoBot", "Agar oldin boshqa botda ovoz bergan bo‘lsangiz ham",
+    "🤯 КЎЗ ОЛДИНГИЗДА СОДИР БЎЛАДИГАН МУЪЖИЗА!", "http://tabobat.com/?r=10", "@Sukmangbot", "@Hisoblaydi_Bot", "@sokmang_bot", "🔔 БАТАФСИЛ МАЪЛУМОТ 🔔",
+    "+998770125552", "+998770125552", ""
 ]
 
 # ---- Hammasini lowercase ----
