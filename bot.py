@@ -48,7 +48,9 @@ KEYWORDS = [
     "+998931798989", "⚠️FAQAT AYOLLAR KIRSIN⚠️", "https://t.me/+unt6j7xH5MM2Y2Iy", "💕 MAXFIY INTIM KOSMETIKALAR✅", "O'QISANGIZ OG'ZINGIZ LANG OCHILIB QOLADI😱😱😍😍", "Dastafka xizmati bor", "K_5 Qozogʻiston mahsuloti 🇵🇼", "+998901273929",
     " Qozo Salarkasi bor.", "Abdurasul", "KECH QOLMANG! VAQT KETYAPTI", "💰 1 ta ovoz = 32 900 so‘m", "@MajburiyRoBot", "Agar oldin boshqa botda ovoz bergan bo‘lsangiz ham",
     "🤯 КЎЗ ОЛДИНГИЗДА СОДИР БЎЛАДИГАН МУЪЖИЗА!", "http://tabobat.com/?r=10", "@Sukmangbot", "@Hisoblaydi_Bot", "@sokmang_bot", "🔔 БАТАФСИЛ МАЪЛУМОТ 🔔",
-    "+998770125552", "+998770125552", "🌺🌺GULI SHOPPING🌺🌺", "@Tozolovchi_robot", "http://shop.mxmedia.uz/tiran/?web=3", "Админлар ўчириб ташламасидан ёзиб олинг"
+    "+998770125552", "+998770125552", "🌺🌺GULI SHOPPING🌺🌺", "@Tozolovchi_robot", "http://shop.mxmedia.uz/tiran/?web=3", "Админлар ўчириб ташламасидан ёзиб олинг",
+    "@PATRUL_UZ", "💵💰Бой бўлишнинг оддий сири ", "Видеони кимга ташлашни биласиз", "https://t.me/bogiston2/14063", "✅ Узунлиги: 22.5 метр", "https://alijahon.uz/oqim/111114", "Mahsulot narxi",
+    "@L1eoooooo"
 ]
 
 # ---- Hammasini lowercase ----
