@@ -50,7 +50,8 @@ KEYWORDS = [
     "🤯 КЎЗ ОЛДИНГИЗДА СОДИР БЎЛАДИГАН МУЪЖИЗА!", "http://tabobat.com/?r=10", "@Sukmangbot", "@Hisoblaydi_Bot", "@sokmang_bot", "🔔 БАТАФСИЛ МАЪЛУМОТ 🔔",
     "+998770125552", "+998770125552", "🌺🌺GULI SHOPPING🌺🌺", "@Tozolovchi_robot", "http://shop.mxmedia.uz/tiran/?web=3", "Админлар ўчириб ташламасидан ёзиб олинг",
     "@PATRUL_UZ", "💵💰Бой бўлишнинг оддий сири ", "Видеони кимга ташлашни биласиз", "https://t.me/bogiston2/14063", "✅ Узунлиги: 22.5 метр", "https://alijahon.uz/oqim/111114", "Mahsulot narxi",
-    "@L1eoooooo", "🌺 Gullar olamiga xush kelibsiz! 🌺", "🌸 Xonaki gullar", "📞 Murojaat uchun:", "+998 91 788 61 57", "@mustago929920", "📲 Kanalimizga qo‘shiling:", "Uy, ofis yoki yaqinlaringiz uchun nafis va chiroyli gullar kerakmi? 🌿", "gullar"
+    "@L1eoooooo", "🌺 Gullar olamiga xush kelibsiz! 🌺", "🌸 Xonaki gullar", "📞 Murojaat uchun:", "+998 91 788 61 57", "@mustago929920", "📲 Kanalimizga qo‘shiling:", "Uy, ofis yoki yaqinlaringiz uchun nafis va chiroyli gullar kerakmi? 🌿", "gullar",
+    "🛢🛢🛢🛢🛢🛢🛢🛢", "+998998638180", "+998998638180", "⛽️🛢Salarka", "💸tolov.Naxt_karta_perechslenya ✅"
 ]
 
 # ---- Hammasini lowercase ----
