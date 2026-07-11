@@ -53,7 +53,8 @@ KEYWORDS = [
     "@L1eoooooo", "🌺 Gullar olamiga xush kelibsiz! 🌺", "🌸 Xonaki gullar", "📞 Murojaat uchun:", "+998 91 788 61 57", "@mustago929920", "📲 Kanalimizga qo‘shiling:", "Uy, ofis yoki yaqinlaringiz uchun nafis va chiroyli gullar kerakmi? 🌿", "gullar",
     "🛢🛢🛢🛢🛢🛢🛢🛢", "+998998638180", "+998998638180", "⛽️🛢Salarka", "💸tolov.Naxt_karta_perechslenya ✅", "@Dreams_shop_admin",
     "🌸 Zamonaviy ayollar kiyimlari", "@SmartJoinhiderBot", "👗 Yangi kolleksiyalar", "🔥 Chegirmadagi mahsulotlarni o‘tkazib yubormang!",
-    "ПУСТОЙ МАШИНА БОР", "БЕНЗИН", "+998772917007", "@Majidxon_7007", "АКУРАТНИЙ КОРА ЖЕНТРА"
+    "ПУСТОЙ МАШИНА БОР", "БЕНЗИН", "+998772917007", "@Majidxon_7007", "АКУРАТНИЙ КОРА ЖЕНТРА", "@Xayrullo_999",
+    "+998941613999", "ОРЮРКАДА 2КИШИ  КЕТАДИ"
 ]
 
 # ---- Hammasini lowercase ----
