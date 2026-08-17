@@ -49,7 +49,7 @@ KEYWORDS = [
     "ПУСТОЙ МАШИНА БОР", "БЕНЗИН", "@Majidxon_7007", "АКУРАТНИЙ КОРА ЖЕНТРА", "@Xayrullo_999",
     "ОРЮРКАДА 2КИШИ  КЕТАДИ", "НАМАНГАН БОНУС", "✅ Ҳизматмиз 100% кафолатланган 👍👍👍👏👏👏👏",
     "АКУМУЛЯТОР ОПТОМ МАГАЗИН", "ПОЧТА КЕРАК", "@Anvarxon85",
-    "ТУЛДИК ИНШААЛЛОХ", "ТОМ БАГАЖ БОР", "(ПРОПАН ТАБЛЕТКА)", "@MilitsiyaBot", "Ayb esa adminda.", "@IzlaydiBot",
+    "ТУЛДИК ИНШААЛЛОХ", "ТОМ БАГАЖ БОР", "(ПРОПАН ТАБЛЕТКА)", "@MilitsiyaBot", "Ayb esa adminda.", "@IzlaydiBot", "🇺🇿 KATTA SHAFYORLAR 🇺🇿", "Original xabar:"
 ]
 
 # Diqqat: aniq telefon raqamlar va bir martalik reklama ID'lari ro'yxatdan olib
