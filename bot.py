@@ -53,11 +53,14 @@ KEYWORD_PATTERN = re.compile(
 )
 
 # ---- Qo'shimcha spam signallari ----
-# Har qanday telefon raqami (faqat aniq raqamlarni ro'yxatlashtirib
-# o'tirmasdan, umumiy naqsh orqali)
-PHONE_PATTERN = re.compile(r"(?:\+?\d[\s\-]?){9,13}")
-# t.me havolasi yoki @username tilga olinishi (kontakt/reklama belgisi)
-TELEGRAM_LINK_PATTERN = re.compile(r"(t\.me/|telegram\.me/|@[a-zA-Z0-9_]{5,32}\b)")
+# Har qanday telefon raqami — lekin faqat so'z ichiga "yopishib qolmagan"
+# holatda (masalan "yangiqorgon950464393" ID kodi telefon deb hisoblanmasin)
+PHONE_PATTERN = re.compile(r"(?<!\w)(?:\+?\d[\s\-]?){9,13}(?!\w)")
+# Faqat HAQIQIY t.me/telegram.me havolasi — oddiy "@username" tilga olinishi
+# (masalan kontakt sifatida) endi signal hisoblanmaydi, chunki bu haqiqiy
+# e'lonlarda juda keng tarqalgan va yolg'on-spam sifatida belgilashga sabab
+# bo'lardi.
+TELEGRAM_LINK_PATTERN = re.compile(r"(t\.me/|telegram\.me/)")
 # Ketma-ket 4 tadan ortiq emoji (reklama postlariga xos bezak)
 MANY_EMOJI_PATTERN = re.compile(
     "[\U0001F300-\U0001FAFF\U00002600-\U000027BF\U0001F1E6-\U0001F1FF]{4,}"
@@ -67,6 +70,30 @@ URL_PATTERN = re.compile(r"https?://\S+")
 
 bot = Bot(token=TOKEN, parse_mode=None)
 dp = Dispatcher(bot)
+
+# Har bir guruh uchun admin ID'lari keshi: {chat_id: (set_of_ids, timestamp)}
+_admin_cache: dict = {}
+_ADMIN_CACHE_TTL = 300  # 5 daqiqa
+
+
+async def get_chat_admin_ids(chat_id: int) -> set:
+    """Guruhning haqiqiy adminlari ro'yxatini Telegram'dan olib, keshlaydi.
+    Bu ADMIN_IDS ni qo'lda kiritishga qaraganda ishonchliroq va har doim
+    yangilangan bo'ladi."""
+    now = asyncio.get_event_loop().time()
+    cached = _admin_cache.get(chat_id)
+    if cached and now - cached[1] < _ADMIN_CACHE_TTL:
+        return cached[0]
+
+    try:
+        admins = await bot.get_chat_administrators(chat_id)
+        ids = {a.user.id for a in admins}
+        _admin_cache[chat_id] = (ids, now)
+        return ids
+    except Exception as e:
+        logger.error(f"Adminlar ro'yxatini olib bo'lmadi: {e}")
+        # Xato bo'lsa, oldingi keshni (bo'lsa) qaytaramiz, aks holda bo'sh to'plam
+        return cached[0] if cached else set()
 
 
 def get_text(message: types.Message) -> str:
@@ -129,9 +156,20 @@ async def process(message: types.Message) -> None:
     if message.chat.type not in ("group", "supergroup"):
         return
 
-    # Adminlarni tegmaymiz
-    if message.from_user and message.from_user.id in ADMIN_IDS:
+    # "Anonim admin" sifatida yuborilgan xabor (guruh nomidan yuboriladi,
+    # message.sender_chat to'ldiriladi) — buni oddiy foydalanuvchi hech qachon
+    # qila olmaydi, faqat adminlar. Shu sabab bunday xabarlarga tegmaymiz.
+    if message.sender_chat is not None:
         return
+
+    if message.from_user:
+        # 1) Qo'lda kiritilgan ADMIN_IDS
+        if message.from_user.id in ADMIN_IDS:
+            return
+        # 2) Telegram'dan olingan haqiqiy admin ro'yxati
+        admin_ids = await get_chat_admin_ids(message.chat.id)
+        if message.from_user.id in admin_ids:
+            return
 
     text = get_text(message)
     if is_spam(text):
