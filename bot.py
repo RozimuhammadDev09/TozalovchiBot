@@ -35,10 +35,6 @@ ADMIN_IDS = {
     int(x) for x in os.getenv("ADMIN_IDS", "").split(",") if x.strip().isdigit()
 }
 
-# Qo'shimcha "signal" asosidagi aniqlashni yoqish/o'chirish (pastga qarang).
-# Standart: yoqilgan. O'chirish uchun ENABLE_HEURISTICS=0 qiling.
-ENABLE_HEURISTICS = os.getenv("ENABLE_HEURISTICS", "1") == "1"
-
 # ---- LOGGING ----
 logging.basicConfig(
     level=logging.INFO,
@@ -51,22 +47,6 @@ KEYWORDS_LOWER = list({k.lower() for k in KEYWORDS})
 KEYWORD_PATTERN = re.compile(
     "|".join(re.escape(k) for k in KEYWORDS_LOWER), re.IGNORECASE
 )
-
-# ---- Qo'shimcha spam signallari ----
-# Har qanday telefon raqami — lekin faqat so'z ichiga "yopishib qolmagan"
-# holatda (masalan "yangiqorgon950464393" ID kodi telefon deb hisoblanmasin)
-PHONE_PATTERN = re.compile(r"(?<!\w)(?:\+?\d[\s\-]?){9,13}(?!\w)")
-# Faqat HAQIQIY t.me/telegram.me havolasi — oddiy "@username" tilga olinishi
-# (masalan kontakt sifatida) endi signal hisoblanmaydi, chunki bu haqiqiy
-# e'lonlarda juda keng tarqalgan va yolg'on-spam sifatida belgilashga sabab
-# bo'lardi.
-TELEGRAM_LINK_PATTERN = re.compile(r"(t\.me/|telegram\.me/)")
-# Ketma-ket 4 tadan ortiq emoji (reklama postlariga xos bezak)
-MANY_EMOJI_PATTERN = re.compile(
-    "[\U0001F300-\U0001FAFF\U00002600-\U000027BF\U0001F1E6-\U0001F1FF]{4,}"
-)
-# http(s) havola
-URL_PATTERN = re.compile(r"https?://\S+")
 
 bot = Bot(token=TOKEN, parse_mode=None)
 dp = Dispatcher(bot)
@@ -104,30 +84,8 @@ def get_text(message: types.Message) -> str:
 def is_spam(text: str) -> bool:
     if not text:
         return False
-
     lowered = text.lower()
-
-    # 1) Aniq qora ro'yxatdagi ibora topilsa — darhol spam
-    if KEYWORD_PATTERN.search(lowered):
-        return True
-
-    if not ENABLE_HEURISTICS:
-        return False
-
-    # 2) Bir nechta "shubhali signal" birga kelsa ham spam deb hisoblanadi.
-    #    Faqat bitta signal (masalan, oddiy telefon raqami) yetarli emas —
-    #    bu haqiqiy foydalanuvchi xabarlarini bekorga o'chirib yubormaslik uchun.
-    signals = 0
-    if PHONE_PATTERN.search(text):
-        signals += 1
-    if TELEGRAM_LINK_PATTERN.search(lowered):
-        signals += 1
-    if MANY_EMOJI_PATTERN.search(text):
-        signals += 1
-    if URL_PATTERN.search(lowered):
-        signals += 1
-
-    return signals >= 2
+    return bool(KEYWORD_PATTERN.search(lowered))
 
 
 async def try_delete(message: types.Message, attempt: int = 0) -> None:
