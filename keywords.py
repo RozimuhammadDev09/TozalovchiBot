@@ -50,7 +50,8 @@ KEYWORDS = [
     "ОРЮРКАДА 2КИШИ  КЕТАДИ", "НАМАНГАН БОНУС", "✅ Ҳизматмиз 100% кафолатланган 👍👍👍👏👏👏👏",
     "АКУМУЛЯТОР ОПТОМ МАГАЗИН", "ПОЧТА КЕРАК", "@Anvarxon85",
     "ТУЛДИК ИНШААЛЛОХ", "ТОМ БАГАЖ БОР", "(ПРОПАН ТАБЛЕТКА)", "@MilitsiyaBot", "Ayb esa adminda.", "@IzlaydiBot", "🇺🇿 KATTA SHAFYORLAR 🇺🇿", "Original xabar:",
-    "+998931594454", "НАМАНГАН БОНУС", "✔️ТОШКЕНТГА 🇺🇿", "ЦЕМЕНТ ЕТКАЗИШ КЕРАК"
+    "+998931594454", "НАМАНГАН БОНУС", "✔️ТОШКЕНТГА 🇺🇿", "ЦЕМЕНТ ЕТКАЗИШ КЕРАК", " Termizdan", "1  kishi  kerak", "915160303", 
+    "Ketadiganlar", "Termiz Sariosiyo Uzun Taxi chati",
 ]
 
 # Diqqat: aniq telefon raqamlar va bir martalik reklama ID'lari ro'yxatdan olib
