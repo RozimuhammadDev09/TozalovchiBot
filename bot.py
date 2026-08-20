@@ -1,158 +1,113 @@
 # cleaner_bot.py
 import asyncio
 import logging
-import os
 import re
-
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
-from aiogram.utils.exceptions import (
-    BotBlocked,
-    ChatNotFound,
-    MessageCantBeDeleted,
-    MessageToDeleteNotFound,
-    RetryAfter,
-    Unauthorized,
-)
-from dotenv import load_dotenv
-
-from keywords import KEYWORDS
 
 # ---------------- CONFIG ----------------
-load_dotenv()
+TOKEN = "8657353210:AAFo831iUZEmxTtC7yrep-QKgiaCy2M0vJw"
 
-TOKEN = os.getenv("BOT_TOKEN")
-if not TOKEN:
-    raise RuntimeError(
-        "BOT_TOKEN topilmadi! Railway/serverda muhit o'zgaruvchisi sifatida "
-        "BOT_TOKEN ni o'rnating (yoki lokal test uchun .env fayl yarating)."
-    )
+# ---- Kalit so'zlar ----
+KEYWORDS = [
+    "kanalimiz😎", "Tarifi", "OLTIN RAQAMLAR 7777", "💰Narxi", "MOBIUZ",
+    "TEZ SOTILIB KETADI ULGURIB QOLING", "FARGONA TUNGI CHAT",
+    "👠🅰️🅰️🅰️🅰️🅰️🥂", "HAR JUMA AKSIYALARI",
+    "K. O. L. L. E. K. S. I. Y. A  S. I 🦋",
+    "✅PIJAMALAR💣💣💣💣", "Документ кламиз", "Регистрация",
+    "Whatsap✅Tелеграм✅Имо✅", "olib ketaman", "1kerak sroshniga",
+    "🚕🚕  🚕🚕", "Toshkentga yuraman",
+    "Rishton atrofida odam poʻsha olamiz tel", "olamiz",
+    "OPTOM", "AKSIYA", "SKIDKA", "Reklamachi",
+    "BREND TAVARLARI", "ОДАМ ОЛАМИЗ", "🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️",
+    "FERAMONLI PARFYUMLAR", "АВТО КОБЛТ ", "СРОЧНО  2 КИШИ КЕРАК", "ПОЧТА ХИЗМАТИМИЗ БОР", "3 дона  жойимиз  бор ", "олиб  кетамиз", "юрамиз", "КЕТАДИГАНЛАР  булса",
+    "✅LICHEBNIY INTIM kosmetikalar", "TAKRORLANMAS KECHA XADYA ETING!", "ГИЖЖАЛАРДАН БУТКУЛ ҚУТУЛИН!", "✅Тез шомолаш",
+    "⚠️Шошилинг — акция чегараланган!", "Бу гижжалар ички органларингизни зарарлайди, ва натижада", "Фақат 72 соат ичида барча гижжалар чиқиб кетади",
+    "АЁЛ  йуловчилар  бор ", "KAZINO UZ CHAT ORIGINAL", "KAZINO", "2 КИШИ КЕРАК", "YO'LMA - YO'L QO'QON", "Egalariga jonatilmoqda", "Ertaga yana dastafka viloyatga chiqadi✅",
+    "yetkazib berish 2kun ichda ✅", "adminga odam qoshdim", "UYIDA OʻTIRIB ISHLASHNI ISTAGAN", "To'lliq ma'lumot olish uchun lichkamga yozing",
+    "AYOL VA QIZLARIMIZ UCHUN", "KIRSANGIZ CHIQOLMAY QOLASIZ! ", "🅰️🅰️🅰️🅰️🅰️🅰️🅰️", "HALIYAM O'TIRIPSIZMI",
+    "FOYDALANING EFFECTINI SEZING", "Moshina bor", "Qiziqganlarga lichkamga yozsin", "✅ Xamma uchun ish taklif qilaman",
+    "Eng kamida 1 mlndan  30  milliongacha  pul topasiz", "batafsil ma'lumot uchun lichkamga yozing", "UYIDA OʻTIRIB ISHLASHNI ISTAGAN AYOL VA QIZLARIMIZ",
+    "5 ta bo'sh ish o'rni bor. Ta'lim bepul", "3 дона  жойимиз  бо", "олиб  кетамиз",
+    "TEL QILORASLAR KETADIGONLAR", "ONLAYN ISHGA TAKLIF", "Assalomu aleykum uyda oʼtirgan holda onlayn ishlashni hohlaysizm", "🅰️🅰️🅱️🆎🆎🆎🆑🅾️", "hammasi noldan oʼrgatilinadi",
+    "staj ketadi", "𝗣𝗢𝗖𝗛𝗧𝗔 𝗢𝗟𝗔𝗠𝗜𝗭", "ЮРАМАН", "МАШИНА КОБАЛЬТ", "машена жентира", "оламиз",
+    "🏥Аптека", "Адрес:Беруний кўчаси 32А-уй", "Аптека: ALPHA PHARM",
+    "Ориентир", "@alphapharm111", "Иш вакти: 7:00 дан 23:00 гача", "ULAMOLAR BISOTIDAN", "Saodatga yetaklovchi hikmatlar", "@Bahodir2580", "Suhandon: Muhammad Nur",
+    "@Mohira_Diamond_Director", "Bts", "Emu pochtalaridan chqaramiz", "Qizlajonla Sovunli gul buketlani", "ulab qoyamiz  uzb bòylab", "ҚОН БОСИМИМ 10 ЙИЛДАН БЕРИ 180 ГА 120 БЎЛАР ЭДИ",
+    "✅Бу мўъжиза эди", "@JoinHiderar_Bot", "YURAMIZ", "@TozalaBot", "💆‍♀️Болаларим кундан кунга инжиқлашиб кетяпти.", "Тезда уланиб олинглар бу ёпиқ канал кейин қидириб топа олмайсизлар!👇",
+    "bir oyli vipi bilan", "Murojaat uchun Lichka", "Songi dizayindagi DARVOZALAR", "@Darvoza_666", "⏰ 11 yillik uzluksiz tajriba 🤝1500 dan ortiq mijozlar", "Namangandan", "Namanganga",
+    "Ketadiganlar", "2 kishi kerak", "termizga", "beshariq", "bewariq", "Beshariqga", "besh ariqga", "MiLadiy_boutique", "Dastafka bormi", "Milady", "Чекланмаган миқдорда", "Пенаблок сотилади",
+    "@Xisoblovchibot", "Қиз фарзандингиз бўлса, асло мушук боқманг! Сабабини билсангиз, шокка тушишингиз аниқ", "олиб кетаман", "БОТИРЖОН",
+    "@Umidjon797", "Уй ва офислар учун — Wifi smart camera", "Smart soat Ultra TW8", "Qozoq K5 salarka bor", "Assalomu alaykum xurmatli xaridorla Qozogʻston 🇰🇿🇰🇿🇰🇿",
+    "🏘⛽️Xujalik propan gaz balon  sotiladi ulgurib qoling arzon ✍️", "@XJTLA", "Toshken Gaz Shafyorlar", "Toshken Gaz Shafyorlar 🔥", "RISHTON BOGDOD TOSHKENT TAXI", "Zayafka Gurpa",
+    "@DrabilkaN1", "HASHAK  VA  DONLARDI  MAYDALAP  CHIQARADI 👍👍👍", "Akalar shu kunlarda Andijonga pochta olib ketadigon taksilar bormi. Nomeri bo'lsa tashlab yuboriladi iltimos", "@ecoshifo",
+    "@Reklama_chimann", "Kimga kerak bo'lsa lichkaga", "🚰 КОЛОДЕЦ ХИЗМАТЛАРИ – Сифат ва ишонч кафолати!", "Assalomu alaykum komnata bor bosa menga yozvorilar", "Andijon Quyonchi Clubi", "Москва внимание падработка работа",
+    "тел: +7 933 680 1615", "📦🚛 СРОЧНО  ЮК ТАКЛИФИ №1", "🇺🇿 Ташкент ➡️ 🇷🇺 Воскресенск", "@Djurayev0029", "Сотилади",
+    "@SherovaXurshida", "NL_ SOG'LOM HAYOT", "🇺🇿Oʻzbekiston boʻylab dastafka ustanofka bepul", "✔️SIZ HAM BIZGA ISHONIB BUYURTMA BERING. BIZ SIZNI ISHONCHINGIZNI OQLAYMIZ", "@Darvozachi_Tolibboy",
+    "@a_mir_shax001", "Sogligi ola hamma joyi soglom yeb ichishi ham yaxshi", "Toshkent Gaz Yandex🥇", "Toshkent Gaz Yandex", "odam pochta olamiz",
+    "⚠️FAQAT AYOLLAR KIRSIN⚠️", "💕 MAXFIY INTIM KOSMETIKALAR✅", "O'QISANGIZ OG'ZINGIZ LANG OCHILIB QOLADI😱😱😍😍", "Dastafka xizmati bor", "K_5 Qozogʻiston mahsuloti 🇵🇼",
+    "Qozo Salarkasi bor.", "KECH QOLMANG! VAQT KETYAPTI", "💰 1 ta ovoz = 32 900 so'm", "@MajburiyRoBot", "Agar oldin boshqa botda ovoz bergan bo'lsangiz ham",
+    "🤯 КЎЗ ОЛДИНГИЗДА СОДИР БЎЛАДИГАН МУЪЖИЗА!", "@Sukmangbot", "@Hisoblaydi_Bot", "@sokmang_bot", "🔔 БАТАФСИЛ МАЪЛУМОТ 🔔",
+    "🌺🌺GULI SHOPPING🌺🌺", "@Tozolovchi_robot", "Админлар ўчириб ташламасидан ёзиб олинг",
+    "@PATRUL_UZ", "💵💰Бой бўлишнинг оддий сири ", "Видеони кимга ташлашни биласиз", "✅ Узунлиги: 22.5 метр", "Mahsulot narxi",
+    "@L1eoooooo", "🌺 Gullar olamiga xush kelibsiz! 🌺", "🌸 Xonaki gullar", "📞 Murojaat uchun:", "@mustago929920", "📲 Kanalimizga qo'shiling:", "Uy, ofis yoki yaqinlaringiz uchun nafis va chiroyli gullar kerakmi? 🌿",
+    "🛢🛢🛢🛢🛢🛢🛢🛢", "⛽️🛢Salarka", "💸tolov.Naxt_karta_perechslenya ✅", "@Dreams_shop_admin",
+    "🌸 Zamonaviy ayollar kiyimlari", "@SmartJoinhiderBot", "👗 Yangi kolleksiyalar", "🔥 Chegirmadagi mahsulotlarni o'tkazib yubormang!",
+    "ПУСТОЙ МАШИНА БОР", "БЕНЗИН", "@Majidxon_7007", "АКУРАТНИЙ КОРА ЖЕНТРА", "@Xayrullo_999",
+    "ОРЮРКАДА 2КИШИ  КЕТАДИ", "НАМАНГАН БОНУС", "✅ Ҳизматмиз 100% кафолатланган 👍👍👍👏👏👏👏",
+    "АКУМУЛЯТОР ОПТОМ МАГАЗИН", "ПОЧТА КЕРАК", "@Anvarxon85",
+    "ТУЛДИК ИНШААЛЛОХ", "ТОМ БАГАЖ БОР", "(ПРОПАН ТАБЛЕТКА)", "@MilitsiyaBot", "Ayb esa adminda.", "@IzlaydiBot", "🇺🇿 KATTA SHAFYORLAR 🇺🇿", "Original xabar:",
+    "+998931594454", "НАМАНГАН БОНУС", "✔️ТОШКЕНТГА 🇺🇿", "ЦЕМЕНТ ЕТКАЗИШ КЕРАК", " Termizdan", "1  kishi  kerak", "915160303", 
+    "Ketadiganlar", "Termiz Sariosiyo Uzun Taxi chati", "почта керак ", "+998905303368", 
+]
 
-# Bu ID'lardagi foydalanuvchilarning xabarlari HECH QACHON o'chirilmaydi
-# (masalan, guruh adminlari). Railway'da ADMIN_IDS=123456,789012 kabi
-# vergul bilan ajratib bering.
-ADMIN_IDS = {
-    int(x) for x in os.getenv("ADMIN_IDS", "").split(",") if x.strip().isdigit()
-}
+# ---- Hammasini lowercase ----
+KEYWORDS = list(set(k.lower() for k in KEYWORDS))
+
+# ---- REGEX pattern ----
+REGEX_PATTERN = re.compile("|".join(re.escape(k) for k in KEYWORDS), re.IGNORECASE)
 
 # ---- LOGGING ----
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.ERROR,  # ❗ faqat xatolar chiqsin
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
+
 logger = logging.getLogger(__name__)
 
-# ---- Kalit so'zlar regexi (aniq mos kelish) ----
-KEYWORDS_LOWER = list({k.lower() for k in KEYWORDS})
-KEYWORD_PATTERN = re.compile(
-    "|".join(re.escape(k) for k in KEYWORDS_LOWER), re.IGNORECASE
-)
-
-bot = Bot(token=TOKEN, parse_mode=None)
+# ---------------- START BOT ----------------
+bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
-# Har bir guruh uchun admin ID'lari keshi: {chat_id: (set_of_ids, timestamp)}
-_admin_cache: dict = {}
-_ADMIN_CACHE_TTL = 300  # 5 daqiqa
 
-
-async def get_chat_admin_ids(chat_id: int) -> set:
-    """Guruhning haqiqiy adminlari ro'yxatini Telegram'dan olib, keshlaydi.
-    Bu ADMIN_IDS ni qo'lda kiritishga qaraganda ishonchliroq va har doim
-    yangilangan bo'ladi."""
-    now = asyncio.get_event_loop().time()
-    cached = _admin_cache.get(chat_id)
-    if cached and now - cached[1] < _ADMIN_CACHE_TTL:
-        return cached[0]
-
-    try:
-        admins = await bot.get_chat_administrators(chat_id)
-        ids = {a.user.id for a in admins}
-        _admin_cache[chat_id] = (ids, now)
-        return ids
-    except Exception as e:
-        logger.error(f"Adminlar ro'yxatini olib bo'lmadi: {e}")
-        # Xato bo'lsa, oldingi keshni (bo'lsa) qaytaramiz, aks holda bo'sh to'plam
-        return cached[0] if cached else set()
-
-
-def get_text(message: types.Message) -> str:
-    """Oddiy matn, caption yoki forward xabarlardan matnni oladi."""
-    return (message.text or message.caption or "").strip()
-
-
-def is_spam(text: str) -> bool:
-    if not text:
-        return False
-    lowered = text.lower()
-    return bool(KEYWORD_PATTERN.search(lowered))
-
-
-async def try_delete(message: types.Message, attempt: int = 0) -> None:
-    try:
-        await message.delete()
-        logger.info(f"O'chirildi: chat={message.chat.id} user={message.from_user.id}")
-    except MessageToDeleteNotFound:
-        pass  # xabar allaqachon o'chirilgan
-    except MessageCantBeDeleted:
-        logger.error(
-            f"Xabarni o'chirib bo'lmadi (huquq yo'q). Chat: {message.chat.id}. "
-            "Botni guruhda ADMIN qilib, 'Delete messages' huquqini bering."
-        )
-    except RetryAfter as e:
-        if attempt < 3:
-            await asyncio.sleep(e.timeout)
-            await try_delete(message, attempt + 1)
-    except (Unauthorized, BotBlocked, ChatNotFound):
-        logger.error("Bot guruhdan chiqarilgan/bloklangan yoki chat topilmadi.")
-    except Exception as e:
-        logger.error(f"Xabar o'chirilmadi! Sabab: {e}")
-
-
-async def process(message: types.Message) -> None:
-    # Faqat guruh/superguruhlarda ishlasin
-    if message.chat.type not in ("group", "supergroup"):
-        return
-
-    # "Anonim admin" sifatida yuborilgan xabor (guruh nomidan yuboriladi,
-    # message.sender_chat to'ldiriladi) — buni oddiy foydalanuvchi hech qachon
-    # qila olmaydi, faqat adminlar. Shu sabab bunday xabarlarga tegmaymiz.
-    if message.sender_chat is not None:
-        return
-
-    if message.from_user:
-        # 1) Qo'lda kiritilgan ADMIN_IDS
-        if message.from_user.id in ADMIN_IDS:
-            return
-        # 2) Telegram'dan olingan haqiqiy admin ro'yxati
-        admin_ids = await get_chat_admin_ids(message.chat.id)
-        if message.from_user.id in admin_ids:
-            return
-
-    text = get_text(message)
-    if is_spam(text):
-        await try_delete(message)
-
-
-@dp.message_handler(content_types=types.ContentTypes.ANY)
+@dp.message_handler(content_types=types.ContentTypes.TEXT)
 async def cleaner(message: types.Message):
-    await process(message)
 
+    # Faqat grouplarda ishlasin
+    if message.chat.type not in ["group", "supergroup"]:
+        return
 
-@dp.edited_message_handler(content_types=types.ContentTypes.ANY)
-async def cleaner_edited(message: types.Message):
-    # Ko'plab spamerlar xabarni yuborgandan keyin tahrirlab, reklama matnini
-    # qo'shishadi — buni ham tekshiramiz.
-    await process(message)
+    text = message.text.lower()
+
+    # Kalit so‘z bordimi?
+    if REGEX_PATTERN.search(text):
+
+        try:
+            await message.delete()
+
+        except Exception as e:
+            # ❗ Faqat bitta ERROR log bo‘ladi, Railwayni portlatmaydi
+            logger.error(f"Xabar o‘chirilmadi! Sabab: {e}")
 
 
 async def on_startup(_):
-    logger.info("Bot ishga tushdi va guruhlarni tozalashga tayyor.")
+    # ❗ hech qanday print/log yo‘q → Railway safe
+    pass
 
 
 if __name__ == "__main__":
     executor.start_polling(
         dp,
-        skip_updates=True,  # eski xabarlarni o'qimaydi -> tezroq ishga tushadi
-        on_startup=on_startup,
+        skip_updates=True,   # eski xabarlarni o‘qimaydi → log kam
+        on_startup=on_startup
     )
