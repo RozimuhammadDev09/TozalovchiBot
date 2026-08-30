@@ -59,7 +59,7 @@ KEYWORDS = [
     "ТУЛДИК ИНШААЛЛОХ", "ТОМ БАГАЖ БОР", "(ПРОПАН ТАБЛЕТКА)", "@MilitsiyaBot", "Ayb esa adminda.", "@IzlaydiBot", "🇺🇿 KATTA SHAFYORLAR 🇺🇿", "Original xabar:",
     "+998931594454", "НАМАНГАН БОНУС", "✔️ТОШКЕНТГА 🇺🇿", "ЦЕМЕНТ ЕТКАЗИШ КЕРАК", " Termizdan", "1  kishi  kerak", "915160303", 
     "Ketadiganlar", "Termiz Sariosiyo Uzun Taxi chati", "почта керак ", "+998905303368", 
-    "O'yinchoqlar dunyosi farzandlarimiz uchun", "@Sanoqchi_robot", "dastafka xizmati mavjud", "mavjud"
+    "O'yinchoqlar dunyosi farzandlarimiz uchun", "@Sanoqchi_robot", "dastafka xizmati mavjud", "mavjud", "OVOZ BERISH", "OVOZ BERISH TUGASHIGA 1 KUN QOLD"
 ]
 
 # ---- Hammasini lowercase ----
