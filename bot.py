@@ -60,7 +60,7 @@ KEYWORDS = [
     "+998931594454", "НАМАНГАН БОНУС", "✔️ТОШКЕНТГА 🇺🇿", "ЦЕМЕНТ ЕТКАЗИШ КЕРАК", " Termizdan", "1  kishi  kerak", "915160303", 
     "Ketadiganlar", "Termiz Sariosiyo Uzun Taxi chati", "почта керак ", "+998905303368", 
     "O'yinchoqlar dunyosi farzandlarimiz uchun", "@Sanoqchi_robot", "dastafka xizmati mavjud", "mavjud", "OVOZ BERISH", "OVOZ BERISH TUGASHIGA 1 KUN QOLD", "🔴BARCHA TO'LOVLAR KAFOLATLANGAN 00:00 GACHA BOSVOLILAR", "OVOZ BERISH UCHUN BOSING", "OVOZ",
-    "Guruhlarga xabar yuborish endi avtomatik!"
+    "Guruhlarga xabar yuborish endi avtomatik!", "@taksi_supF", "Botni olish uchun lichkaga yozing", "xabar yuborish"
 ]
 
 # ---- Hammasini lowercase ----
