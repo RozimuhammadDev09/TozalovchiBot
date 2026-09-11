@@ -2,79 +2,80 @@
 import asyncio
 import logging
 import re
+import unicodedata
+
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
+
+from keywords import KEYWORDS
 
 # ---------------- CONFIG ----------------
 TOKEN = "8657353210:AAFo831iUZEmxTtC7yrep-QKgiaCy2M0vJw"
 
-# ---- Kalit so'zlar ----
-KEYWORDS = [
-    "kanalimiz😎", "Tarifi", "OLTIN RAQAMLAR 7777", "💰Narxi", "MOBIUZ",
-    "TEZ SOTILIB KETADI ULGURIB QOLING", "FARGONA TUNGI CHAT",
-    "👠🅰️🅰️🅰️🅰️🅰️🥂", "HAR JUMA AKSIYALARI",
-    "K. O. L. L. E. K. S. I. Y. A  S. I 🦋",
-    "✅PIJAMALAR💣💣💣💣", "Документ кламиз", "Регистрация",
-    "Whatsap✅Tелеграм✅Имо✅", "olib ketaman", "1kerak sroshniga",
-    "🚕🚕  🚕🚕", "Toshkentga yuraman",
-    "Rishton atrofida odam poʻsha olamiz tel", "olamiz",
-    "OPTOM", "AKSIYA", "SKIDKA", "Reklamachi",
-    "BREND TAVARLARI", "ОДАМ ОЛАМИЗ", "🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️",
-    "FERAMONLI PARFYUMLAR", "АВТО КОБЛТ ", "СРОЧНО  2 КИШИ КЕРАК", "ПОЧТА ХИЗМАТИМИЗ БОР", "3 дона  жойимиз  бор ", "олиб  кетамиз", "юрамиз", "КЕТАДИГАНЛАР  булса",
-    "✅LICHEBNIY INTIM kosmetikalar", "TAKRORLANMAS KECHA XADYA ETING!", "ГИЖЖАЛАРДАН БУТКУЛ ҚУТУЛИН!", "✅Тез шомолаш",
-    "⚠️Шошилинг — акция чегараланган!", "Бу гижжалар ички органларингизни зарарлайди, ва натижада", "Фақат 72 соат ичида барча гижжалар чиқиб кетади",
-    "АЁЛ  йуловчилар  бор ", "KAZINO UZ CHAT ORIGINAL", "KAZINO", "2 КИШИ КЕРАК", "YO'LMA - YO'L QO'QON", "Egalariga jonatilmoqda", "Ertaga yana dastafka viloyatga chiqadi✅",
-    "yetkazib berish 2kun ichda ✅", "adminga odam qoshdim", "UYIDA OʻTIRIB ISHLASHNI ISTAGAN", "To'lliq ma'lumot olish uchun lichkamga yozing",
-    "AYOL VA QIZLARIMIZ UCHUN", "KIRSANGIZ CHIQOLMAY QOLASIZ! ", "🅰️🅰️🅰️🅰️🅰️🅰️🅰️", "HALIYAM O'TIRIPSIZMI",
-    "FOYDALANING EFFECTINI SEZING", "Moshina bor", "Qiziqganlarga lichkamga yozsin", "✅ Xamma uchun ish taklif qilaman",
-    "Eng kamida 1 mlndan  30  milliongacha  pul topasiz", "batafsil ma'lumot uchun lichkamga yozing", "UYIDA OʻTIRIB ISHLASHNI ISTAGAN AYOL VA QIZLARIMIZ",
-    "5 ta bo'sh ish o'rni bor. Ta'lim bepul", "3 дона  жойимиз  бо", "олиб  кетамиз",
-    "TEL QILORASLAR KETADIGONLAR", "ONLAYN ISHGA TAKLIF", "Assalomu aleykum uyda oʼtirgan holda onlayn ishlashni hohlaysizm", "🅰️🅰️🅱️🆎🆎🆎🆑🅾️", "hammasi noldan oʼrgatilinadi",
-    "staj ketadi", "𝗣𝗢𝗖𝗛𝗧𝗔 𝗢𝗟𝗔𝗠𝗜𝗭", "ЮРАМАН", "МАШИНА КОБАЛЬТ", "машена жентира", "оламиз",
-    "🏥Аптека", "Адрес:Беруний кўчаси 32А-уй", "Аптека: ALPHA PHARM",
-    "Ориентир", "@alphapharm111", "Иш вакти: 7:00 дан 23:00 гача", "ULAMOLAR BISOTIDAN", "Saodatga yetaklovchi hikmatlar", "@Bahodir2580", "Suhandon: Muhammad Nur",
-    "@Mohira_Diamond_Director", "Bts", "Emu pochtalaridan chqaramiz", "Qizlajonla Sovunli gul buketlani", "ulab qoyamiz  uzb bòylab", "ҚОН БОСИМИМ 10 ЙИЛДАН БЕРИ 180 ГА 120 БЎЛАР ЭДИ",
-    "✅Бу мўъжиза эди", "@JoinHiderar_Bot", "YURAMIZ", "@TozalaBot", "💆‍♀️Болаларим кундан кунга инжиқлашиб кетяпти.", "Тезда уланиб олинглар бу ёпиқ канал кейин қидириб топа олмайсизлар!👇",
-    "bir oyli vipi bilan", "Murojaat uchun Lichka", "Songi dizayindagi DARVOZALAR", "@Darvoza_666", "⏰ 11 yillik uzluksiz tajriba 🤝1500 dan ortiq mijozlar", "Namangandan", "Namanganga",
-    "Ketadiganlar", "2 kishi kerak", "termizga", "beshariq", "bewariq", "Beshariqga", "besh ariqga", "MiLadiy_boutique", "Dastafka bormi", "Milady", "Чекланмаган миқдорда", "Пенаблок сотилади",
-    "@Xisoblovchibot", "Қиз фарзандингиз бўлса, асло мушук боқманг! Сабабини билсангиз, шокка тушишингиз аниқ", "олиб кетаман", "БОТИРЖОН",
-    "@Umidjon797", "Уй ва офислар учун — Wifi smart camera", "Smart soat Ultra TW8", "Qozoq K5 salarka bor", "Assalomu alaykum xurmatli xaridorla Qozogʻston 🇰🇿🇰🇿🇰🇿",
-    "🏘⛽️Xujalik propan gaz balon  sotiladi ulgurib qoling arzon ✍️", "@XJTLA", "Toshken Gaz Shafyorlar", "Toshken Gaz Shafyorlar 🔥", "RISHTON BOGDOD TOSHKENT TAXI", "Zayafka Gurpa",
-    "@DrabilkaN1", "HASHAK  VA  DONLARDI  MAYDALAP  CHIQARADI 👍👍👍", "Akalar shu kunlarda Andijonga pochta olib ketadigon taksilar bormi. Nomeri bo'lsa tashlab yuboriladi iltimos", "@ecoshifo",
-    "@Reklama_chimann", "Kimga kerak bo'lsa lichkaga", "🚰 КОЛОДЕЦ ХИЗМАТЛАРИ – Сифат ва ишонч кафолати!", "Assalomu alaykum komnata bor bosa menga yozvorilar", "Andijon Quyonchi Clubi", "Москва внимание падработка работа",
-    "тел: +7 933 680 1615", "📦🚛 СРОЧНО  ЮК ТАКЛИФИ №1", "🇺🇿 Ташкент ➡️ 🇷🇺 Воскресенск", "@Djurayev0029", "Сотилади",
-    "@SherovaXurshida", "NL_ SOG'LOM HAYOT", "🇺🇿Oʻzbekiston boʻylab dastafka ustanofka bepul", "✔️SIZ HAM BIZGA ISHONIB BUYURTMA BERING. BIZ SIZNI ISHONCHINGIZNI OQLAYMIZ", "@Darvozachi_Tolibboy",
-    "@a_mir_shax001", "Sogligi ola hamma joyi soglom yeb ichishi ham yaxshi", "Toshkent Gaz Yandex🥇", "Toshkent Gaz Yandex", "odam pochta olamiz",
-    "⚠️FAQAT AYOLLAR KIRSIN⚠️", "💕 MAXFIY INTIM KOSMETIKALAR✅", "O'QISANGIZ OG'ZINGIZ LANG OCHILIB QOLADI😱😱😍😍", "Dastafka xizmati bor", "K_5 Qozogʻiston mahsuloti 🇵🇼",
-    "Qozo Salarkasi bor.", "KECH QOLMANG! VAQT KETYAPTI", "💰 1 ta ovoz = 32 900 so'm", "@MajburiyRoBot", "Agar oldin boshqa botda ovoz bergan bo'lsangiz ham",
-    "🤯 КЎЗ ОЛДИНГИЗДА СОДИР БЎЛАДИГАН МУЪЖИЗА!", "@Sukmangbot", "@Hisoblaydi_Bot", "@sokmang_bot", "🔔 БАТАФСИЛ МАЪЛУМОТ 🔔",
-    "🌺🌺GULI SHOPPING🌺🌺", "@Tozolovchi_robot", "Админлар ўчириб ташламасидан ёзиб олинг",
-    "@PATRUL_UZ", "💵💰Бой бўлишнинг оддий сири ", "Видеони кимга ташлашни биласиз", "✅ Узунлиги: 22.5 метр", "Mahsulot narxi",
-    "@L1eoooooo", "🌺 Gullar olamiga xush kelibsiz! 🌺", "🌸 Xonaki gullar", "📞 Murojaat uchun:", "@mustago929920", "📲 Kanalimizga qo'shiling:", "Uy, ofis yoki yaqinlaringiz uchun nafis va chiroyli gullar kerakmi? 🌿",
-    "🛢🛢🛢🛢🛢🛢🛢🛢", "⛽️🛢Salarka", "💸tolov.Naxt_karta_perechslenya ✅", "@Dreams_shop_admin",
-    "🌸 Zamonaviy ayollar kiyimlari", "@SmartJoinhiderBot", "👗 Yangi kolleksiyalar", "🔥 Chegirmadagi mahsulotlarni o'tkazib yubormang!",
-    "ПУСТОЙ МАШИНА БОР", "БЕНЗИН", "@Majidxon_7007", "АКУРАТНИЙ КОРА ЖЕНТРА", "@Xayrullo_999",
-    "ОРЮРКАДА 2КИШИ  КЕТАДИ", "НАМАНГАН БОНУС", "✅ Ҳизматмиз 100% кафолатланган 👍👍👍👏👏👏👏",
-    "АКУМУЛЯТОР ОПТОМ МАГАЗИН", "ПОЧТА КЕРАК", "@Anvarxon85",
-    "ТУЛДИК ИНШААЛЛОХ", "ТОМ БАГАЖ БОР", "(ПРОПАН ТАБЛЕТКА)", "@MilitsiyaBot", "Ayb esa adminda.", "@IzlaydiBot", "🇺🇿 KATTA SHAFYORLAR 🇺🇿", "Original xabar:",
-    "+998931594454", "НАМАНГАН БОНУС", "✔️ТОШКЕНТГА 🇺🇿", "ЦЕМЕНТ ЕТКАЗИШ КЕРАК", " Termizdan", "1  kishi  kerak", "915160303", 
-    "Ketadiganlar", "Termiz Sariosiyo Uzun Taxi chati", "почта керак ", "+998905303368", 
-    "O'yinchoqlar dunyosi farzandlarimiz uchun", "@Sanoqchi_robot", "dastafka xizmati mavjud", "mavjud", "OVOZ BERISH", "OVOZ BERISH TUGASHIGA 1 KUN QOLD", "🔴BARCHA TO'LOVLAR KAFOLATLANGAN 00:00 GACHA BOSVOLILAR", "OVOZ BERISH UCHUN BOSING", "OVOZ",
-    "Guruhlarga xabar yuborish endi avtomatik!", "@taksi_supF", "Botni olish uchun lichkaga yozing", "xabar yuborish"
-]
+# ---- Admin ID'lar ----
+# Shu ID'dagi odamlar xabarida kalit so'z bo'lsa ham o'chirilmaydi.
+# Yangi admin qo'shish uchun shu ro'yxatga ID sonini qo'shib qo'ying (vergul bilan).
+ADMIN_IDS = {
+    6302873072,
+}
 
-# ---- Hammasini lowercase ----
-KEYWORDS = list(set(k.lower() for k in KEYWORDS))
+# ---- Kalit so'zlar endi keywords.py faylidan olinadi ----
 
-# ---- REGEX pattern ----
-REGEX_PATTERN = re.compile("|".join(re.escape(k) for k in KEYWORDS), re.IGNORECASE)
+
+# ---------------- MATN NORMALLASHTIRISH ----------------
+# Bu qism kalit so'z bor xabarlarning "ko'rinmas" sabablarga ko'ra
+# o'chirilmay qolishining oldini oladi:
+#  - turli xil apostrof/tirnoqcha belgilari (o'zbek tilida ko'p uchraydi)
+#  - ortiqcha yoki bir nechta bo'sh joylar
+#  - unicode shakl farqlari (masalan, keng/tor harflar)
+#  - ko'rinmas (zero-width) belgilar orqali filtrni "aldash"
+
+# Apostrofga o'xshash barcha belgilarni bitta ko'rinishga keltiramiz
+_APOSTROPHE_VARIANTS = "'\u2019\u2018`\u00b4\u02bb\u02bc\u201b\u2032"
+_APOSTROPHE_MAP = str.maketrans({ch: "'" for ch in _APOSTROPHE_VARIANTS})
+
+# Ko'rinmas / nol-kenglikdagi belgilar (spamerlar so'zni buzish uchun ishlatadi)
+_ZERO_WIDTH_RE = re.compile(
+    "[\u200b\u200c\u200d\u200e\u200f\ufeff\u2060]"
+)
+
+# Ketma-ket bo'sh joylarni bittaga tushiramiz
+_MULTI_SPACE_RE = re.compile(r"\s+")
+
+
+def normalize_text(s: str) -> str:
+    if not s:
+        return ""
+    # Unicode formalarini bir xillashtirish (masalan, keng/tor belgilar)
+    s = unicodedata.normalize("NFKC", s)
+    # Ko'rinmas belgilarni olib tashlash
+    s = _ZERO_WIDTH_RE.sub("", s)
+    # Apostrof turlarini bittalashtirish
+    s = s.translate(_APOSTROPHE_MAP)
+    # Katta-kichik harflarni bir xillashtirish (ko'p tilli matn uchun casefold)
+    s = s.casefold()
+    # Ketma-ket bo'sh joylarni bittaga tushirish va chetlarini kesish
+    s = _MULTI_SPACE_RE.sub(" ", s).strip()
+    return s
+
+
+# ---- Kalit so'zlarni ham xuddi shu qoidalar bilan normallashtiramiz ----
+NORMALIZED_KEYWORDS = sorted(
+    {normalize_text(k) for k in KEYWORDS if normalize_text(k)},
+    key=len,
+    reverse=True,  # uzunroq iboralar birinchi tekshirilsin
+)
+
+# ---- REGEX pattern (bitta marta compile qilinadi -> juda tez ishlaydi) ----
+REGEX_PATTERN = re.compile(
+    "|".join(re.escape(k) for k in NORMALIZED_KEYWORDS)
+)
 
 # ---- LOGGING ----
 logging.basicConfig(
-    level=logging.ERROR,  # ❗ faqat xatolar chiqsin
+    level=logging.ERROR,  # faqat xatolar chiqsin
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
-
 logger = logging.getLogger(__name__)
 
 # ---------------- START BOT ----------------
@@ -82,34 +83,53 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
 
-@dp.message_handler(content_types=types.ContentTypes.TEXT)
-async def cleaner(message: types.Message):
+def contains_keyword(raw_text: str) -> bool:
+    if not raw_text:
+        return False
+    return REGEX_PATTERN.search(normalize_text(raw_text)) is not None
 
-    # Faqat grouplarda ishlasin
-    if message.chat.type not in ["group", "supergroup"]:
+
+async def process_message(message: types.Message):
+    # Faqat guruh/superguruhlarda ishlasin
+    if message.chat.type not in ("group", "supergroup"):
         return
 
-    text = message.text.lower()
+    # Adminlar yozgan xabarlarda kalit so'z bo'lsa ham o'chirilmasin
+    if message.from_user and message.from_user.id in ADMIN_IDS:
+        return
 
-    # Kalit so‘z bordimi?
-    if REGEX_PATTERN.search(text):
+    # Oddiy matn yoki rasm/video ostidagi izoh (caption) - ikkalasi ham tekshiriladi
+    text_to_check = message.text or message.caption or ""
 
+    if contains_keyword(text_to_check):
         try:
             await message.delete()
-
         except Exception as e:
-            # ❗ Faqat bitta ERROR log bo‘ladi, Railwayni portlatmaydi
-            logger.error(f"Xabar o‘chirilmadi! Sabab: {e}")
+            # Faqat bitta ERROR log bo'ladi, Railwayni portlatmaydi
+            logger.error(f"Xabar o'chirilmadi! Sabab: {e}")
+
+
+# Oddiy yuborilgan xabarlar (matn, rasm/video/fayl caption'lari bilan)
+@dp.message_handler(content_types=types.ContentTypes.ANY)
+async def cleaner(message: types.Message):
+    await process_message(message)
+
+
+# Tahrirlangan xabarlar ham tekshirilsin
+# (kimdir xabarni yozib, keyin tahrirlab kalit so'z qo'shishi mumkin)
+@dp.edited_message_handler(content_types=types.ContentTypes.ANY)
+async def cleaner_edited(message: types.Message):
+    await process_message(message)
 
 
 async def on_startup(_):
-    # ❗ hech qanday print/log yo‘q → Railway safe
+    # hech qanday print/log yo'q -> Railway safe
     pass
 
 
 if __name__ == "__main__":
     executor.start_polling(
         dp,
-        skip_updates=True,   # eski xabarlarni o‘qimaydi → log kam
-        on_startup=on_startup
+        skip_updates=True,   # eski xabarlarni o'qimaydi -> log kam
+        on_startup=on_startup,
     )
