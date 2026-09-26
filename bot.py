@@ -21,6 +21,13 @@ ADMIN_IDS = {
 
 # ---- Kalit so'zlar endi keywords.py faylidan olinadi ----
 
+# ---- REPLY QILINGAN XABARNI AVTO-O'CHIRISH ----
+# Guruhda kimdir biror xabarga "Reply" qilib yozsa,
+# o'sha reply qilingan (asl) xabar shu yerda ko'rsatilgan
+# soniyadan keyin avtomatik o'chib ketadi.
+# Kerakli qiymatni shu yerga o'zingiz kiriting (soniyada):
+REPLY_AUTO_DELETE_SECONDS = 60
+
 
 # ---------------- MATN NORMALLASHTIRISH ----------------
 # Bu qism kalit so'z bor xabarlarning "ko'rinmas" sabablarga ko'ra
@@ -109,10 +116,39 @@ async def process_message(message: types.Message):
             logger.error(f"Xabar o'chirilmadi! Sabab: {e}")
 
 
+async def schedule_reply_delete(reply_target: types.Message):
+    """
+    Berilgan xabarni REPLY_AUTO_DELETE_SECONDS soniya kutib,
+    keyin o'chirib tashlaydi.
+    """
+    await asyncio.sleep(REPLY_AUTO_DELETE_SECONDS)
+    try:
+        await reply_target.delete()
+    except Exception as e:
+        # Xabar allaqachon o'chirilgan yoki botda huquq yo'q bo'lishi mumkin
+        logger.error(f"Reply qilingan xabar o'chirilmadi! Sabab: {e}")
+
+
+async def process_reply_auto_delete(message: types.Message):
+    # Faqat guruh/superguruhlarda ishlasin
+    if message.chat.type not in ("group", "supergroup"):
+        return
+
+    # Xabar boshqa bir xabarga reply qilib yozilganmi?
+    if message.reply_to_message is None:
+        return
+
+    # Reply qilingan asl xabarni belgilangan vaqtdan keyin o'chirish
+    # uchun fon vazifasi (task) sifatida ishga tushiramiz -
+    # shunda bot boshqa xabarlarni kutib turmaydi.
+    asyncio.create_task(schedule_reply_delete(message.reply_to_message))
+
+
 # Oddiy yuborilgan xabarlar (matn, rasm/video/fayl caption'lari bilan)
 @dp.message_handler(content_types=types.ContentTypes.ANY)
 async def cleaner(message: types.Message):
     await process_message(message)
+    await process_reply_auto_delete(message)
 
 
 # Tahrirlangan xabarlar ham tekshirilsin
