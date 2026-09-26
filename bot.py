@@ -26,7 +26,7 @@ ADMIN_IDS = {
 # o'sha reply qilingan (asl) xabar shu yerda ko'rsatilgan
 # soniyadan keyin avtomatik o'chib ketadi.
 # Kerakli qiymatni shu yerga o'zingiz kiriting (soniyada):
-REPLY_AUTO_DELETE_SECONDS = 10
+REPLY_AUTO_DELETE_SECONDS = 120
 
 
 # ---------------- MATN NORMALLASHTIRISH ----------------
